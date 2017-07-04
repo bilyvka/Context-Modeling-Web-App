@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Editor View Test</title>
+    <link rel="stylesheet" href="test.css">
+</head>
+<body>
+  <div id="leftPanel">
+
+  </div>
+  <div id="rightPanel" class="gridOverlay">
+        <div id="navigationWindow">
+
+        </div>
+  </div>
+
+
+
+
+  var item = angular.element(document.getElementById(e.dataTransfer.getData('Text')));
+  console.log(item)
+
+  var newElement = item.clone(true)
+  //var span = newElement.find('span');
+
+  var binId = uuid.new();
+  newElement.attr('id',binId);
+  newElement.attr('draggable',false)
+  newElement.addClass('moveable diagramObject')
+  newElement.removeClass('drag element draggable')
+  newElement.attr('ng-click','show($event)')
+
+  scope.drop({dragEl:binId})
+
+  var compiledEl = $compile(newElement)(scope)
+  element.append(compiledEl)
+
+
+
+
+</body>
+</html>

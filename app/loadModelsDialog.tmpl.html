@@ -1,0 +1,43 @@
+<md-dialog >
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Load Context Models Dialog</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon  aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h1 class="md-title">Select model: </h1>
+                <div layout="row">
+                    <md-input-container>
+
+                        <md-select ng-model="selectedModel" md-selected-text="getSelectedModel()">
+                            <md-optgroup label="items">
+                                <md-option ng-value="item" ng-repeat="item in models" > {{item.name}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+
+            <span flex></span>
+            <md-button ng-click="answer(selectedModel)">
+                Ok
+            </md-button>
+            <md-button ng-click="answer('cancel')">
+                Cancel
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>

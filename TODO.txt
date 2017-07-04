@@ -1,0 +1,28 @@
+1. add data type image.
+   Two objects:
+      -  a string containing the base64-encoded photo image
+      -  a string containing the location metadata
+
+2. Create the json file structure for the mobile app data.  Done
+
+    A file for mobile app developer :
+       - Readme.txt file contains:
+         This file explains the use of contextualization service by your mobile application or third party application.
+         The data should be collected from your mobile app and send in a certain format.
+         The file example.json provides an example of how the data structure should look like for your app.
+         It has the:
+           -client_id is an identificator of your app that will be used by contextulizaiton service for doing context analysis.
+           -model_id is an indetificator of your context model that you have created for your data.
+           -data is json array of collected data. OBS! each data should have a timestamp in milliseconds
+           -postURL is a post request URL of sending the data to the Contextualization Service.
+       - example.json file contains:
+           { client_id:"12WDEgt4556677bgf",
+             model_id:"123456778896575",
+             data:[{...}],
+             postURL:"http://localhost:3005/data"
+           }
+
+3. Send the json context model config file to the server.  Done
+4. save context model configuration on the microservice.   Done
+5. load context model. Done
+6. edit/update context model.

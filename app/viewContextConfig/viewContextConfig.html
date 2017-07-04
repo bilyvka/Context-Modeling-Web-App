@@ -1,0 +1,484 @@
+<div class="container-fluid" xmlns="http://www.w3.org/1999/html" xmlns="http://www.w3.org/1999/html">
+
+    <!--Headers-->
+    <div class="row">
+        <!--Left Panel-->
+        <div class="col-sm-2 colls" >
+
+
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('CE')">Context Elements</div>
+                    <div class="panel-body">
+                        <div style="height: 500px">
+                            <div class="element droppable-element draggable" element-type="simpleElement">
+                                <div class="element-header">
+                                    <span class="element-name"> Name</span>
+                                </div>
+                                <div class="element-content">
+                                    -property1 </br>
+                                    -property2 </br>
+                                    -...
+                                </div>
+                                <div class="element-footer">
+                                    Entity (e.g., User, Device)
+                                </div>
+                            </div>
+
+                            <div class="element droppable-element draggable" element-type="enrichedElement">
+                                <div class="element-header">
+                                    <span class="element-name"> Name</span>
+                                </div>
+                                <div class="element-content">
+                                    <label>Input:</label>
+                                    <div class="element-input-params">
+                                        -param1 </br>
+                                        -param2 </br>
+                                        -...
+                                    </div>
+                                    <label>Output:</label>
+                                    <div class="element-output-params">
+                                        -out1 </br>
+                                        -out2 </br>
+                                        -...
+                                    </div>
+
+                                </div>
+                                <div class="element-footer">
+                                    Enriched Context Info
+                                </div>
+                            </div>
+
+                            <div class="element  droppable-element draggable" element-type="abstractElement">
+                                <div class="element-header abstract">
+                                    <span class="element-name"> Name</span>
+                                </div>
+
+                                <div class="element-footer">
+                                    Contextualized Entity
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('IV')">Information</div>
+                    <div class="panel-body">
+                        <div style="height: 150px" id="info">
+                            Click on any element to see the information about it...
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!--Center Panel-->
+        <div class="col-sm-7 colls">
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('ED')">Editor</div>
+                    <div class="panel-body">
+                        <div class="editorTools">
+                            <div class="btn-group">
+
+                                <button type="button" class="btn btn-default"><i class="material-icons">text_format</i></button>
+                                <button type="button" class="btn btn-default" ng-click="saveContextModel()"><i class="material-icons">save</i></button>
+                                <button type="button" class="btn btn-default" ng-click="loadContextModel()"><i class="material-icons">file_download</i></button>
+                            </div>
+                        </div>
+
+                        <div id="container" class="editorCanvas gridOverlay droppable" drop='drop(id,type,x,y,w,h)' ng-mousedown="startdraw($event)" ng-mousemove="ondraw($event)" ng-mouseup="stopdraw($event)">
+
+
+
+
+                                <div class="diagramObject moveable droppable-element"  position="absolute" ng-repeat="el in elements" element-type="{{el.type}}" id="{{el.id}}" ng-click="$evalAsync(click(el.id))" ng-dblclick="showConnectionDialog($event,el.id)" moved="moved(el.id,top,left)" ng-style="{top:el.top+'px',left:el.left + 'px',width:el.width+'px',position:'absolute'}" >
+
+                                    <div ng-switch on="el.type">
+                                        <div ng-switch-when="abstractElement">
+                                            <!-- code to render a abstract element type-->
+                                            <div class="element-header abstract">
+                                                <span class="element-name"> {{el.name}}</span>
+                                            </div>
+
+                                            <div class="element-footer">
+                                                Contextualized Entity
+                                            </div>
+                                        </div>
+                                        <div ng-switch-when="enrichedElement">
+                                            <div class="element-header">
+                                                <span class="element-name"> {{el.name}}</span>
+                                            </div>
+                                            <div class="element-content">
+                                                <label>Input:</label>
+                                                <div class="element-input-params">
+                                                    <ul>
+                                                        <li ng-repeat="property in el.inputParameters"
+                                                            ng-bind-html-unsafe="property.name" outer-height>
+                                                            {{ property.name }}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <label>Output:</label>
+                                                <div class="element-output-params">
+                                                    <ul>
+                                                        <li ng-repeat="property in el.outputParameters"
+                                                            ng-bind-html-unsafe="property.name" outer-height>
+                                                            {{ property.name }}
+                                                        </li>
+                                                    </ul>
+                                                </div>
+
+                                            </div>
+                                            <div class="element-footer">
+                                                Enriched Context Info
+                                            </div>
+
+                                        </div>
+                                        <div ng-switch-default>
+                                            <!-- code to render the regular element type -->
+                                            <div class="element-header">
+                                                <span class="element-name"> {{el.name}}</span>
+                                            </div>
+                                            <div class="element-content " >
+                                                <ul>
+                                                    <li ng-repeat="property in el.properties"
+                                                        ng-bind-html-unsafe="property.name" outer-height>
+                                                        {{ property.name }}
+                                                    </li>
+                                                </ul>
+
+                                            </div>
+                                            <div class="element-footer">
+                                                Entity
+                                            </div>
+                                        </div>
+                                    </div>
+
+
+                                    <!--<svg ng-style="{width:el.width+10,height:el.height,top:0+'px',left:0 + 'px',position:'absolute'}" position="absolute"  >-->
+                                        <!--connectors out-->
+                                        <!--<circle class="connectors-out" connectorId="bottom" ng-attr-cx="{{el.width/2}}" ng-attr-cy="{{el.height/2+10}}" r="5" stroke="grey" stroke-width="1" fill="white" />-->
+                                        <!--<circle class="connectors-out" connectorId="right" ng-attr-cx="{{el.width}}" ng-attr-cy="{{el.height/3}}" r="5" stroke="grey" stroke-width="1" fill="white" />-->
+                                        <!--connectors-in-->
+                                        <!--<polygon ng-if="el.type == 'enrichedElement'" class="connectors-in" connectorId="left-1" fill="white" stroke="grey" stroke-width="1" ng-attr-points="1,{{el.height/3-28}} 1,{{el.height/3-13}} 15,{{el.height/3-20}}"/>-->
+                                        <!--<polygon ng-if="el.type == 'enrichedElement'" class="connectors-in" connectorId="left-2" fill="white" stroke="grey" stroke-width="1" ng-attr-points="1,{{el.height/3}} 1,{{el.height/3+15}} 15,{{el.height/3 + 8}}"/>-->
+                                    <!--</svg>-->
+
+
+                                </div>
+                            <!--<svg id="connectionsSVG" style="position:absolute;top:0px; left:0px;z-index: 9" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg" version="1.1">-->
+                            <!--</svg>-->
+                            <svg id="connections-svg" width="0" height="0" >
+                                <!--<path-->
+                                        <!--id="myNewPath"-->
+                                        <!--d="M0 0"-->
+                                        <!--stroke-width="2px"-->
+                                        <!--style="stroke:#555; fill:none;  "/>-->
+                            </svg>
+
+
+                        </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('EI')">Editor Information</div>
+                    <div class="panel-body">
+                        <div style="height: 50px">
+                            Panel Content
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!--Right Panel-->
+        <div class="col-sm-3 colls">
+
+            <div class="panel-group">
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('PR')">Properties</div>
+                    <div class="panel-body">
+                        <div style="height: 400px; overflow: scroll" id="element-properties">
+                            <!--Select an element in the editor area to see the properties-->
+                            <div ng-show="selectedElement">
+
+                                <div class="property-header">
+                                    <lable>Element Name:</lable>
+                                    <input class="property-element-name" type="text" ng-model="selectedEl.name"
+                                           ng-keypress="limitKeypress($event,selectedEl.name,30)"
+                                            placeholder="Name (e.g., User Context)">
+                                </div>
+                                <div ng-switch on="selectedEl.type">
+
+                                    <div ng-switch-when="simpleElement">
+
+                                        <div class="property-list">
+
+                                            <div class="property" ng-repeat="(i,property) in selectedEl.properties track by $index">
+                                                <!--property 1-->
+                                                <div class="property-name">
+                                                    <lable>Property {{i+1}}: </lable>
+                                                    <input class="property-name-input" type="text"
+                                                           ng-model="selectedEl.properties[i].name"
+                                                           ng-keypress="limitKeypress($event,selectedEl.properties[i].name,30)"
+                                                           ng-keydown="resizeElementOnKeydown($event,selectedEl.properties[i].name)"
+                                                           placeholder="Name (e.g., age)">
+                                                </div>
+
+                                                <div class="property-type">
+                                                    <lable>Property Type:</lable>
+                                                    <select class="select-property"
+                                                            ng-model="selectedEl.properties[i].type" ng-selected="selectedEl.properties[i].type" ng-options="property.id as property.name for property in properties.types">
+                                                            <option></option>
+
+                                                    </select>
+                                                </div>
+                                                <i class="material-icons property-delete-icon" ng-click="deleteProperty(selectedEl.properties[i].name)">delete</i>
+
+                                            </div>
+
+
+
+                                        </div>
+                                        <!--footer-->
+                                        <div class="property-footer">
+                                            <button class="add-property-button" ng-click="addProperty()">Add Property</button>
+
+                                            <button class="save-property-button" ng-click="saveProperties()">Save</button>
+                                            <button class="cancel-property-button" ng-click="cancel()">Cancel</button>
+                                        </div>
+                                    </div>
+                                    <div ng-switch-when="enrichedElement">
+                                         <!--show properties for enriched elements-->
+                                        <div >
+                                            <lable>Enriched Element Type:</lable>
+                                            <select
+                                                    ng-model="selectedEl.enrichedElementType" ng-selected="selectedEl.enrichedElementType" ng-options="property.id as property.name for property in enrichedElementTypes">
+                                                <option></option>
+
+                                            </select>
+
+                                        </div>
+                                        <!--show properties if it is Web Service API-->
+                                        <div ng-if="selectedEl.enrichedElementType == 'WS'">
+
+                                                <lable>Web Service Name: </lable>
+                                                <input class="property-element-name" type="text"
+                                                       ng-model="selectedEl.enrichedProperties.name"
+                                                       placeholder="Name (e.g., Google Places API, Spotify)">
+                                                <lable>Web Service URL (to method): </lable>
+                                                <input  class="property-element-name" type="text"
+                                                       ng-model="selectedEl.enrichedProperties.url"
+                                                       placeholder="URL (e.g., https://maps.googleapis.com/maps/api/place/nearbysearch/json)">
+
+                                                <lable>API Key: </lable>
+                                                <input class="property-element-name" type="text"
+                                                       ng-model="selectedEl.enrichedProperties.api_key"
+                                                       placeholder="KEY (e.g., 6TYGH897....)">
+
+                                                <lable>ClientID (if required): </lable>
+                                                <input class="property-element-name" type="text"
+                                                       ng-model="selectedEl.enrichedProperties.client_id"
+                                                       placeholder="ClientID (e.g., 6TYGH897....)">
+
+                                                <lable>ClientSecret (if required): </lable>
+                                                <input class="property-element-name" type="text"
+                                                       ng-model="selectedEl.enrichedProperties.client_secret"
+                                                       placeholder="ClientSecret (e.g., 6TYGH897....)">
+                                                <lable>Format (JSON/CSV/XML): </lable>
+                                                 <select
+                                                    ng-model="selectedEl.enrichedProperties.format" ng-selected="selectedEl.enrichedProperties.format" ng-options="property.id as property.name for property in enrichedProperties.formatTypes">
+                                                <option></option>
+
+                                                </select>
+                                                </br>
+                                                 <label>Input parameters</label>
+                                                <!--Input Parameters-->
+                                                <div class="property-list">
+
+                                                    <div class="property" ng-repeat="(i,property) in selectedEl.inputParameters track by $index">
+                                                        <!--property 1-->
+                                                        <div class="property-name">
+                                                            <lable>Input {{i+1}}: </lable>
+                                                            <input class="property-name-input" type="text"
+                                                                   ng-model="selectedEl.inputParameters[i].name"
+                                                                   ng-keypress="limitKeypress($event,selectedEl.inputParameters[i].name,30)"
+                                                                   ng-keydown="resizeElementOnKeydown($event,selectedEl.inputParameters[i].name)"
+                                                                   placeholder="Name (e.g., radius,location)">
+                                                        </div>
+
+                                                        <div class="property-type">
+                                                            <lable>Value(optional):</lable>
+                                                            <input class="property-name-input" type="text"
+                                                                   ng-model="selectedEl.inputParameters[i].value"
+                                                                   placeholder="E.g.,input 1:radius, value: 5 ">
+
+                                                        </div>
+                                                        <i class="material-icons property-delete-icon" ng-click="deleteProperty(selectedEl.inputParameters[i].name)">delete</i>
+
+                                                    </div>
+
+                                                </div>
+                                                <!--footer-->
+                                                <div class="property-footer">
+                                                    <button class="add-property-button" ng-click="addProperty('input')">Add Input Parameter</button>
+                                                </div>
+
+                                                </br>
+                                                <label>Output parameters</label>
+                                                <div class="property-list">
+
+                                                    <div class="property" ng-repeat="(i,property) in selectedEl.outputParameters track by $index">
+                                                        <!--property 1-->
+                                                        <div class="property-name">
+                                                            <lable>Input {{i+1}}: </lable>
+                                                            <input class="property-name-input" type="text"
+                                                                   ng-model="selectedEl.outputParameters[i].name"
+                                                                   ng-keypress="limitKeypress($event,selectedEl.outputParameters[i].name,30)"
+                                                                   ng-keydown="resizeElementOnKeydown($event,selectedEl.outputParameters[i].name)"
+                                                                   placeholder="Name (e.g., place, sunny, weather)">
+                                                        </div>
+
+                                                        <div class="property-type">
+                                                            <lable>Value:</lable>
+                                                            <input class="property-name-input" type="text"
+                                                                   ng-model="selectedEl.outputParameters[i].value"
+                                                                   placeholder="correct name of the filed/data in the response returned by a web service api ">
+
+                                                        </div>
+                                                        <i class="material-icons property-delete-icon" ng-click="deleteProperty(selectedEl.outputParameters[i].name)">delete</i>
+
+                                                    </div>
+
+                                                </div>
+                                                <!--footer-->
+                                                <div class="property-footer">
+                                                    <button class="add-property-button" ng-click="addProperty('output')">Add Output Parameter</button>
+                                                </div>
+
+
+
+
+                                        </div>
+
+                                    </div>
+
+                                    <div ng-switch-default>
+
+                                    </div>
+
+
+
+                                 </div>
+                            </div>
+
+                    </div>
+                </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading" ng-click="showInfo('AE')">All Elements</div>
+                    <div class="panel-body">
+                        <div style="height: 250px">
+                            Panel Content
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+
+<!--<div class="row clearfix" >-->
+<!--<div class="col-md-4 column" ng-controller="viewContextConfigCtrl">-->
+<!--&lt;!&ndash;Create Scenario Form&ndash;&gt;-->
+<!--<form role="form" validate class="css-form">-->
+<!--&lt;!&ndash;<div class="form-group">&ndash;&gt;-->
+<!--<label for="name">Scenario Name: </label>-->
+<!--<input type="text" class="form-control" ng-model="scenarioName" id="name" placeholder="Enter Scenario Name" required/>-->
+<!--&lt;!&ndash;</div>&ndash;&gt;-->
+
+<!--<button class="btn" ng-click="createScenario()"> Create Scenario </button>-->
+
+
+<!--</form>-->
+
+<!--&lt;!&ndash;Dimension Settings&ndash;&gt;-->
+<!--</br>Dimension Settings</br>-->
+<!--<form validate class="css-form">-->
+
+
+<!--<label for="dimensionN">Name:</label>-->
+<!--<input type="text" class="form-control" ng-model="dimensionName" id="dimensionN" placeholder="Dimension name" required />-->
+
+<!--<label for="dimensionDescr">Short Description:</label>-->
+<!--<input type="text" class="form-control" ng-model="dimensionDescr" id="dimensionDescr" required/>-->
+<!--</br>-->
+<!--&lt;!&ndash;  Dropdown checkbox list of sources   &ndash;&gt;-->
+<!--<div class="btn-group" dropdown is-open="status.isopen">-->
+<!--<button type="button" class="btn btn-primary dropdown-toggle" dropdown-toggle ng-disabled="disabled">-->
+<!--Source  <span class="caret"></span>-->
+<!--</button>-->
+<!--<ul class="dropdown-menu" role="menu">-->
+<!--<li  ng-repeat="source in sources" >-->
+
+<!--<input  type="checkbox" name="selectedSources[]"  value="{{source}}" ng-model = "source.selected"> {{source.name}}-->
+
+<!--</li>-->
+
+<!--</ul>-->
+
+
+<!--</div>-->
+
+<!--&lt;!&ndash;Add sensor source&ndash;&gt;-->
+<!--<div ng-show="isChecked('sensor')">-->
+<!--<br />-->
+<!--<label>-->
+<!--<input type="radio" name="sensorType" ng-model="sensorType" value="mobile">-->
+<!--Sensor in mobile device-->
+<!--</label>-->
+<!--<label>-->
+<!--<input type="radio" name="sensorType" ng-model="sensorType" value="external" >-->
+<!--External sensor-->
+<!--</label>-->
+
+<!--<br/>-->
+<!--<div class="wrapper">-->
+<!--<div ng-show="sensorType == 'mobile'">-->
+
+<!--<lable  ng-repeat="sensor in sensorSources" >-->
+<!--<br />-->
+<!--<input  type="checkbox" name="selectedSensors[]"  value="{{sensor}}" ng-model = "sensor.selected"> {{sensor.name}}-->
+
+<!--</lable>-->
+
+
+<!--</div>-->
+<!--<div ng-show="sensorType == 'external'">-->
+<!--Not supported yet-->
+<!--</div>-->
+<!--</div>-->
+
+<!--</div>-->
+<!--&lt;!&ndash;Add Web Service API source&ndash;&gt;-->
+<!--<div ng-show="isChecked('webservice')"></div>-->
+<!--&lt;!&ndash;Add Device Specific Features source &ndash;&gt;-->
+<!--<div ng-show="isChecked('feature')"></div>-->
+
+
+<!--</form>-->
+
+
+<!--</div>-->
+
+<!--</div>-->

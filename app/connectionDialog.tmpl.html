@@ -1,0 +1,67 @@
+<md-dialog >
+    <form ng-cloak>
+        <md-toolbar>
+            <div class="md-toolbar-tools">
+                <h2>Connection Dialog</h2>
+                <span flex></span>
+                <md-button class="md-icon-button" ng-click="cancel()">
+                    <md-icon  aria-label="Close dialog"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+
+        <md-dialog-content>
+            <div class="md-dialog-content">
+                <h1 class="md-title">Connect element " {{elements[elementId].name}} " with: </h1>
+                <div layout="row">
+                    <md-input-container>
+
+                        <md-select ng-model="selectedItem" md-selected-text="getSelectedItem()">
+                            <md-optgroup label="items">
+                                <md-option ng-value="item" ng-repeat="item in elements" ng-if="item.id != elementId">Element {{item.name}}</md-option>
+                            </md-optgroup>
+                        </md-select>
+                    </md-input-container>
+                </div>
+
+                <div ng-show="selectedItem.type === 'enrichedElement'">
+                     <h1 class="md-title">Setup connections:</h1>
+                     <div layout="row">
+                        Input parameters:
+
+                         <md-list>
+                             <md-list-item class="md-2-line" ng-repeat="item in selectedItem.inputParameters">
+                                 <div class="md-list-item-text">
+                                     <h3>{{item.name}}</h3>
+                                     <p ng-if="item.value != ''">{{item.value}}</p>
+
+                                     <md-select ng-if="item.value ===''" ng-model="item.field_name">
+                                         <md-optgroup label="items">
+                                             <md-option ng-value="field_name" ng-repeat="field_name in elements[elementId].properties" > {{field_name.name}}</md-option>
+                                         </md-optgroup>
+                                     </md-select>
+
+
+                                 </div>
+                             </md-list-item>
+                         </md-list>
+
+
+                     </div>
+                </div>
+
+            </div>
+        </md-dialog-content>
+
+        <md-dialog-actions layout="row">
+
+            <span flex></span>
+            <md-button ng-click="answer(selectedItem.id)">
+                Ok
+            </md-button>
+            <md-button ng-click="answer('cancel')">
+                Cancel
+            </md-button>
+        </md-dialog-actions>
+    </form>
+</md-dialog>
